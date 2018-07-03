@@ -66,6 +66,7 @@ public final class NettyWebSocketClient {
                 port = 443;
             }
         }
+        final String isCompression = System.getProperty("nls.ws.compression", "false");
         bootstrap.option(ChannelOption.TCP_NODELAY, true)
             .group(group).channel(NioSocketChannel.class).handler(new ChannelInitializer<SocketChannel>() {
             @Override
@@ -74,8 +75,13 @@ public final class NettyWebSocketClient {
                 if (sslCtx != null) {
                     p.addLast(sslCtx.newHandler(ch.alloc(), websocketURI.getHost(), 443));
                 }
-                p.addLast(new HttpClientCodec(), new HttpObjectAggregator(8192),
-                    WebSocketClientCompressionHandler.INSTANCE);
+                if ("true".equalsIgnoreCase(isCompression)) {
+                    p.addLast(new HttpClientCodec(), new HttpObjectAggregator(8192),
+                        WebSocketClientCompressionHandler.INSTANCE);
+                } else {
+                    p.addLast(new HttpClientCodec(), new HttpObjectAggregator(8192));
+                }
+
                 p.addLast("hookedHandler", new WebSocketClientHandler());
 
             }
@@ -83,25 +89,22 @@ public final class NettyWebSocketClient {
 
     }
 
-    public Connection connect(String token, ConnectionListener listener, int connectionTimeout) {
-        try {
-            bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout);
-            HttpHeaders httpHeaders = new DefaultHttpHeaders();
-            httpHeaders.set(Constant.HEADER_TOKEN, token);
-            WebSocketClientHandshaker handshaker = WebSocketClientHandshakerFactory
-                .newHandshaker(websocketURI, WebSocketVersion.V13, null, true, httpHeaders);
-            Channel channel = bootstrap.connect(websocketURI.getHost(), port).sync().channel();
-            WebSocketClientHandler handler = (WebSocketClientHandler)channel.pipeline().get("hookedHandler");
-            handler.setListener(listener);
-            handler.setHandshaker(handshaker);
-            handshaker.handshake(channel);
-            handler.handshakeFuture().sync();
-            logger.debug("websocket connection is established,connectionId:{}", channel.id());
-            return new NettyConnection(channel);
-        } catch (Exception e) {
-            listener.onError(e);
-            throw new RuntimeException(e.getMessage(), e);
-        }
+    public Connection connect(String token, ConnectionListener listener, int connectionTimeout) throws Exception {
+        bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout);
+        HttpHeaders httpHeaders = new DefaultHttpHeaders();
+        httpHeaders.set(Constant.HEADER_TOKEN, token);
+        WebSocketClientHandshaker handshaker = WebSocketClientHandshakerFactory
+            .newHandshaker(websocketURI, WebSocketVersion.V13, null, true, httpHeaders);
+
+        Channel channel = bootstrap.connect(websocketURI.getHost(), port).sync().channel();
+        logger.debug("websocket channel is established after sync,connectionId:{}", channel.id());
+        WebSocketClientHandler handler = (WebSocketClientHandler)channel.pipeline().get("hookedHandler");
+        handler.setListener(listener);
+        handler.setHandshaker(handshaker);
+        handshaker.handshake(channel);
+        handler.handshakeFuture().sync();
+        logger.debug("websocket connection is established after handshake,connectionId:{}", channel.id());
+        return new NettyConnection(channel);
     }
 
     public void shutdown() {

@@ -27,14 +27,11 @@ import com.alibaba.nls.client.protocol.InputFormatEnum;
 import com.alibaba.nls.client.protocol.NlsClient;
 import com.alibaba.nls.client.protocol.SampleRateEnum;
 import com.alibaba.nls.client.protocol.SpeechReqProtocol;
-import com.alibaba.nls.client.transport.Connection;
 import com.alibaba.nls.client.util.IdGen;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.alibaba.nls.client.protocol.Constant.VALUE_NAMESPACE_ASR;
-import static com.alibaba.nls.client.protocol.Constant.VALUE_NAME_ASR_STOP;
 import static com.alibaba.nls.client.protocol.SpeechReqProtocol.State.STATE_CLOSED;
 import static com.alibaba.nls.client.protocol.SpeechReqProtocol.State.STATE_COMPLETE;
 import static com.alibaba.nls.client.protocol.SpeechReqProtocol.State.STATE_CONNECTED;
@@ -44,12 +41,13 @@ import static com.alibaba.nls.client.protocol.SpeechReqProtocol.State.STATE_REQU
 import static com.alibaba.nls.client.protocol.SpeechReqProtocol.State.STATE_STOP_SENT;
 
 /**
- * Created by zhishen on 2017/11/24.
- * 语音识别器,用于设置及发送识别请求,处理识别结果回调
+ * Created by siwei on 2018/05/14.
+ * 实时语音转写器，支持长语音,用于设置及发送识别请求,处理识别结果回调
  * 非线程安全
  */
-public class SpeechRecognizer extends SpeechReqProtocol {
-    static Logger logger = LoggerFactory.getLogger(SpeechRecognizer.class);
+public class SpeechTranscriber extends SpeechReqProtocol {
+    static Logger logger = LoggerFactory.getLogger(SpeechTranscriber.class);
+
     private CountDownLatch completeLatch;
     private CountDownLatch readyLatch;
 
@@ -69,7 +67,7 @@ public class SpeechRecognizer extends SpeechReqProtocol {
     /**
      * 输入音频格式
      *
-     * @param format pcm opu opus speex
+     * @param format pcm  opu opus speex
      */
     public void setFormat(InputFormatEnum format) {
         payload.put(Constant.PROP_ASR_FORMAT, format.getName());
@@ -89,7 +87,7 @@ public class SpeechRecognizer extends SpeechReqProtocol {
     }
 
     /**
-     * 是否返回中间识别结果，默认为false
+     * 是否返回句子的中间识别结果，默认为false
      *
      * @param isEnable
      */
@@ -98,16 +96,16 @@ public class SpeechRecognizer extends SpeechReqProtocol {
     }
 
     /**
-     * 是否在识别结果中添加标点，默认值为false
+     * 是否在识别结果中添加标点，默认为false
      *
      * @param isEnable
      */
     public void setEnablePunctuation(boolean isEnable) {
-        payload.put("enable_punctuation_prediction", isEnable);
+        payload.put(Constant.PROP_ASR_ENABLE_PUNCTUATION_PREDICTION, isEnable);
     }
 
     /**
-     * 设置开启ITN(Inverse Text Normalization）,,开启后汉字数字将转为阿拉伯数字输出,默认关闭
+     * 设置开启ITN(Inverse Text Normalization）,开启后汉字数字将转为阿拉伯数字输出,默认关闭
      *
      * @param enableITN
      */
@@ -115,15 +113,14 @@ public class SpeechRecognizer extends SpeechReqProtocol {
         payload.put(Constant.PROP_ASR_ENABLE_ITN, enableITN);
     }
 
-    public SpeechRecognizer(NlsClient client, SpeechRecognizerListener listener)throws Exception {
-        Connection conn = client.connect(listener);
-        this.conn = conn;
+    public SpeechTranscriber(NlsClient client, SpeechTranscriberListener listener) throws Exception{
+        this.conn = client.connect(listener);
         payload = new HashMap<String, Object>();
-        header.put(Constant.PROP_NAMESPACE, VALUE_NAMESPACE_ASR);
-        header.put(Constant.PROP_NAME, Constant.VALUE_NAME_ASR_START);
+        header.put(Constant.PROP_NAMESPACE, Constant.VALUE_NAMESPACE_ASR_TRANSCRIPTION);
+        header.put(Constant.PROP_NAME, Constant.VALUE_NAME_ASR_TRANSCRIPTION_START);
         payload.put(Constant.PROP_ASR_FORMAT, DEFAULT_FORMAT);
         payload.put(Constant.PROP_ASR_SAMPLE_RATE, DEFAULT_SAMPLE_RATE);
-        listener.setSpeechRecognizer(this);
+        listener.setSpeechTranscriber(this);
         state = STATE_CONNECTED;
     }
 
@@ -190,9 +187,9 @@ public class SpeechRecognizer extends SpeechReqProtocol {
     }
 
     /**
-     * 内部调用方法
+     * 服务端准备好了进行语音转写
      */
-    void markReady() {
+    void markTranscriberReady() {
         state = STATE_REQUEST_CONFIRMED;
         if (readyLatch != null) {
             readyLatch.countDown();
@@ -200,18 +197,17 @@ public class SpeechRecognizer extends SpeechReqProtocol {
     }
 
     /**
-     * 内部调用方法
+     * 服务端停止了语音转写
      */
-    void markComplete() {
+    void markTranscriberComplete() {
         state = STATE_COMPLETE;
         if (completeLatch != null) {
             completeLatch.countDown();
         }
-
     }
 
     /**
-     * 内部调用方法
+     * 服务端返回错误
      */
     void markFail() {
         state = STATE_FAIL;
@@ -237,7 +233,7 @@ public class SpeechRecognizer extends SpeechReqProtocol {
     }
 
     /**
-     * 开始语音识别:发送识别请求,同步接收服务端确认
+     * 开始语音转写：发送语音转写请求，同步接收服务端确认
      *
      * @throws Exception
      */
@@ -245,7 +241,7 @@ public class SpeechRecognizer extends SpeechReqProtocol {
         state.checkStart();
         String taskId = IdGen.genId();
         currentTaskId = taskId;
-        this.setTaskId(taskId);
+        this.setTaskId(currentTaskId);
         conn.sendText(this.serialize());
         state = STATE_REQUEST_SENT;
         completeLatch = new CountDownLatch(1);
@@ -257,21 +253,20 @@ public class SpeechRecognizer extends SpeechReqProtocol {
             logger.error(msg);
             throw new Exception(msg);
         }
-
     }
 
     /**
-     * 结束语音识别:发送结束识别通知,接收服务端确认
+     * 结束语音识别: 发送结束识别通知，接收服务端确认
      *
      * @throws Exception
      */
     public void stop() throws Exception {
         state.checkStop();
         SpeechReqProtocol req = new SpeechReqProtocol();
-        req.setAppKey(getAppKey());
-        req.header.put(Constant.PROP_NAMESPACE, VALUE_NAMESPACE_ASR);
-        req.header.put(Constant.PROP_NAME, VALUE_NAME_ASR_STOP);
         req.header.put(Constant.PROP_TASK_ID, currentTaskId);
+        req.header.put(Constant.PROP_NAMESPACE, Constant.VALUE_NAMESPACE_ASR_TRANSCRIPTION);
+        req.header.put(Constant.PROP_NAME, Constant.VALUE_NAME_ASR_TRANSCRIPTION_STOP);
+        req.setAppKey(getAppKey());
         conn.sendText(req.serialize());
         state = STATE_STOP_SENT;
         boolean result = completeLatch.await(10, TimeUnit.SECONDS);

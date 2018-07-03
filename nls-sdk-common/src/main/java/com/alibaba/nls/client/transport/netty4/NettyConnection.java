@@ -52,16 +52,20 @@ public class NettyConnection implements Connection {
 
     @Override
     public void sendText(final String payload) {
-        logger.debug("thread:{},send:{}", Thread.currentThread().getId(), payload);
-        TextWebSocketFrame frame = new TextWebSocketFrame(payload);
-        channel.writeAndFlush(frame);
+        if (channel != null && channel.isActive()) {
+            logger.debug("thread:{},send:{}", Thread.currentThread().getId(), payload);
+            TextWebSocketFrame frame = new TextWebSocketFrame(payload);
+            channel.writeAndFlush(frame);
+        }
 
     }
 
     @Override
     public void sendBinary(byte[] payload) {
-        BinaryWebSocketFrame frame = new BinaryWebSocketFrame(Unpooled.wrappedBuffer(payload));
-        channel.writeAndFlush(frame);
+        if (channel != null && channel.isActive()) {
+            BinaryWebSocketFrame frame = new BinaryWebSocketFrame(Unpooled.wrappedBuffer(payload));
+            channel.writeAndFlush(frame);
+        }
 
     }
 }

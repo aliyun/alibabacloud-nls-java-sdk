@@ -9,10 +9,10 @@
         <artifactId>nls-sdk-java</artifactId>
         <version>2.0.0</version>
     </parent>
-
+    <description>tts sdk</description>
     <groupId>com.alibaba.nls</groupId>
-    <artifactId>nls-sdk-short-asr</artifactId>
-    <description>short-asr sdk</description>
+    <artifactId>nls-sdk-tts</artifactId>
+
 
     <dependencies>
         <dependency>
@@ -21,5 +21,6 @@
         </dependency>
     </dependencies>
 
-    
+
+
 </project>

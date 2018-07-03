@@ -11,9 +11,8 @@
     </parent>
 
     <groupId>com.alibaba.nls</groupId>
-    <artifactId>nls-sdk-short-asr</artifactId>
-    <description>short-asr sdk</description>
-
+    <artifactId>nls-sdk-long-asr</artifactId>
+    <description>long-asr sdk</description>
     <dependencies>
         <dependency>
             <groupId>com.alibaba.nls</groupId>

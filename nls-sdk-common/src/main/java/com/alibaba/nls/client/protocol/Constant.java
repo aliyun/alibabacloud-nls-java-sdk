@@ -43,16 +43,7 @@ public class Constant {
 
     public static final String PROP_ASR_FORMAT = "format";
     public static final String PROP_ASR_SAMPLE_RATE = "sample_rate";
-    public static final String PROP_ASR_VOCABULARY_ID = "vocabulary_id";
-    public static final String PROP_ASR_VOCABULARY = "vocabulary";
-    public static final String PROP_ASR_CUSTOMIZATION_ID = "customization_id";
-    public static final String PROP_ASR_KEYWORD_LIST_ID = "keyword_list_id";
-    public static final String PROP_ASR_CLASS_VOCABULARY = "class_vocabulary_id";
-    public static final String PROP_ASR_MAX_START_SILENCE = "max_start_silence";
-    public static final String PROP_ASR_MAX_END_SILENCE = "max_end_silence";
-    public static final String PROP_ASR_MAX_ALTERNATES = "max_alternates";
     public static final String PROP_ASR_ENABLE_ITN = "enable_inverse_text_normalization";
-    public static final String PROP_ASR_ENABLE_VAD = "enable_voice_detection";
     public static final String PROP_ASR_ENABLE_INTERMEDIATE_RESULT = "enable_intermediate_result";
     public static final String PROP_ASR_ENABLE_PUNCTUATION_PREDICTION = "enable_punctuation_prediction";
 

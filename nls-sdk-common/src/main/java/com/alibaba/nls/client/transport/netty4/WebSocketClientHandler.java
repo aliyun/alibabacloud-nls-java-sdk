@@ -81,6 +81,16 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
         } else {
             logger.debug("channelInactive");
         }
+        if (!handshaker.isHandshakeComplete()) {
+            String errorMsg;
+            if (ctx.channel() != null) {
+                errorMsg = "channel inactive during handshake,connectionId:" + ctx.channel().id();
+            } else {
+                errorMsg = "channel inactive during handshake";
+            }
+            logger.debug(errorMsg);
+            handshakeFuture.setFailure(new Exception(errorMsg));
+        }
         if (listener != null) {
             listener.onClose(-1, "channelInactive");
         }
