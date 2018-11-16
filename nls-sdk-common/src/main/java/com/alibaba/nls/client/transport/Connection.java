@@ -17,7 +17,9 @@
 package com.alibaba.nls.client.transport;
 
 /**
- * Created by zhishen on 2017/11/2.
+ * @author zhishen.ml
+ * @date 2017/11/02
+ *
  */
 public interface Connection {
     public void close();
@@ -26,5 +28,10 @@ public interface Connection {
 
     public void sendBinary(byte[] payload);
 
+    public void sendPing();
+
     public String getId();
+
+    public boolean isActive();
+
 }
