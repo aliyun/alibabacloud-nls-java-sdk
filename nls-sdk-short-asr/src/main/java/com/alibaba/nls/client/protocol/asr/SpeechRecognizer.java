@@ -44,7 +44,9 @@ import static com.alibaba.nls.client.protocol.SpeechReqProtocol.State.STATE_REQU
 import static com.alibaba.nls.client.protocol.SpeechReqProtocol.State.STATE_STOP_SENT;
 
 /**
- * Created by zhishen on 2017/11/24.
+ * @author zhishen.ml
+ * @date 2017/11/24
+ *
  * 语音识别器,用于设置及发送识别请求,处理识别结果回调
  * 非线程安全
  */

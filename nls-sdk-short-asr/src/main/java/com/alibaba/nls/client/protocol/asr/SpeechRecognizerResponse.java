@@ -19,7 +19,9 @@ package com.alibaba.nls.client.protocol.asr;
 import com.alibaba.nls.client.protocol.SpeechResProtocol;
 
 /**
- * Created by zhishen on 2017/11/3.
+ * @author zhishen.ml
+ * @date 2017/11/24
+ *
  * 一句话识别返回结果
  */
 public class SpeechRecognizerResponse extends SpeechResProtocol {

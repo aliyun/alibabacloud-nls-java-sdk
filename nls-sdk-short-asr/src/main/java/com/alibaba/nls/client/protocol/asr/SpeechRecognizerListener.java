@@ -26,7 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by zhishen on 2017/11/2.
+ * @author zhishen.ml
+ * @date 2017/11/24
+ *
  */
 public abstract class SpeechRecognizerListener implements ConnectionListener {
     Logger logger = LoggerFactory.getLogger(SpeechRecognizerListener.class);
