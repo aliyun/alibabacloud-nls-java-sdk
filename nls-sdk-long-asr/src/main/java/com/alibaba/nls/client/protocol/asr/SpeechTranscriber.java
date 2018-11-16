@@ -41,7 +41,9 @@ import static com.alibaba.nls.client.protocol.SpeechReqProtocol.State.STATE_REQU
 import static com.alibaba.nls.client.protocol.SpeechReqProtocol.State.STATE_STOP_SENT;
 
 /**
- * Created by siwei on 2018/05/14.
+ * @author zhishen.ml
+ * @date 2018/05/24
+ *
  * 实时语音转写器，支持长语音,用于设置及发送识别请求,处理识别结果回调
  * 非线程安全
  */
@@ -50,6 +52,12 @@ public class SpeechTranscriber extends SpeechReqProtocol {
 
     private CountDownLatch completeLatch;
     private CountDownLatch readyLatch;
+
+    protected SpeechTranscriberListener speechTranscriberListener;
+
+    public SpeechTranscriberListener getSpeechTranscriberListener(){
+        return this.speechTranscriberListener;
+    }
 
     /**
      * 如果没有设置format,默认为pcm
@@ -121,6 +129,7 @@ public class SpeechTranscriber extends SpeechReqProtocol {
         payload.put(Constant.PROP_ASR_FORMAT, DEFAULT_FORMAT);
         payload.put(Constant.PROP_ASR_SAMPLE_RATE, DEFAULT_SAMPLE_RATE);
         listener.setSpeechTranscriber(this);
+        speechTranscriberListener=listener;
         state = STATE_CONNECTED;
     }
 

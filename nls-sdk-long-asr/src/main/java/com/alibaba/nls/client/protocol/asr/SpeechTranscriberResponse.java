@@ -19,7 +19,9 @@ package com.alibaba.nls.client.protocol.asr;
 import com.alibaba.nls.client.protocol.SpeechResProtocol;
 
 /**
- * Created by siwei 2018/05/14
+ * @author zhishen.ml
+ * @date 2018/05/24
+ *
  * 长语音的识别结果
  */
 public class SpeechTranscriberResponse extends SpeechResProtocol {
@@ -40,6 +42,29 @@ public class SpeechTranscriberResponse extends SpeechResProtocol {
     public Integer getTransSentenceTime() {
         return (Integer)payload.get("time");
     }
+
+    /**
+     * 结果置信度,0.0-1.0 值越大置信度越高
+     *
+     * @return
+     */
+    public Double getConfidence() {
+        Object o=payload.get("confidence");
+        if(o!=null){
+            return Double.parseDouble(o.toString());
+        }
+        return null;
+    }
+
+    /**
+     *  sentenceBegin事件对应的时间
+     *
+     * @return
+     */
+    public Integer getSentenceBeginTime() {
+        return (Integer)payload.get("begin_time");
+    }
+
 
     /**
      * 最终识别结果

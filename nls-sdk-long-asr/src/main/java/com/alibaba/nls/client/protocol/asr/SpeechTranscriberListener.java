@@ -26,7 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by siwei on 2018/05/14
+ * @author zhishen.ml
+ * @date 2018/05/24
+ *
  */
 public abstract class SpeechTranscriberListener implements ConnectionListener {
     Logger logger = LoggerFactory.getLogger(SpeechTranscriberListener.class);
@@ -34,6 +36,10 @@ public abstract class SpeechTranscriberListener implements ConnectionListener {
 
     public void setSpeechTranscriber(SpeechTranscriber transcriber) {
         this.transcriber = transcriber;
+    }
+
+    public SpeechTranscriber getSpeechTranscriber(){
+        return transcriber;
     }
 
     /**
