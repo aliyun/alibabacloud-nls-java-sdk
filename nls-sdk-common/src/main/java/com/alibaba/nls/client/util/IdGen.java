@@ -19,7 +19,9 @@ package com.alibaba.nls.client.util;
 import java.util.UUID;
 
 /**
- * Created by zhishen on 2017/11/3.
+ * @author zhishen.ml
+ * @date 2017/11/02
+ *
  */
 public class IdGen {
     public static String genId() {
