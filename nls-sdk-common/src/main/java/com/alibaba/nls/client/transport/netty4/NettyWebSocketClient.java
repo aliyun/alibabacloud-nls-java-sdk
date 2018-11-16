@@ -46,7 +46,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author zhishen
+ * @author zhishen.ml
+ * @date 2017/11/27
+ *
  */
 public final class NettyWebSocketClient {
     private static Logger logger = LoggerFactory.getLogger(NettyWebSocketClient.class);

@@ -35,6 +35,11 @@ import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author zhishen.ml
+ * @date 2017/11/02
+ *
+ */
 public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> {
     private static Logger logger = LoggerFactory.getLogger(WebSocketClientHandler.class);
 
@@ -104,8 +109,8 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
                 FullHttpResponse response = (FullHttpResponse)msg;
                 handshaker.finishHandshake(ch, response);
                 handshakeFuture.setSuccess();
-                logger.info("WebSocket Client connected! response headers[sec-websocket-extensions]:{}",
-                    response.headers().get("sec-websocket-extensions"));
+                logger.info("WebSocket Client connected! response headers:{}",
+                    response.headers());
             } catch (WebSocketHandshakeException e) {
                 FullHttpResponse res = (FullHttpResponse)msg;
                 String errorMsg = String.format("WebSocket Client failed to connect,status:%s,reason:%s", res.status(),
