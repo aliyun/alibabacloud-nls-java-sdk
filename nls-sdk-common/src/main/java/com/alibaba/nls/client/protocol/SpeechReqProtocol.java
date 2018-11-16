@@ -29,7 +29,8 @@ import org.slf4j.LoggerFactory;
 import static com.alibaba.nls.client.protocol.SpeechReqProtocol.State.STATE_INIT;
 
 /**
- * Created by zhishen on 2017/11/24.
+ * @author zhishen.ml
+ * @date 2017/11/24
  *
  * 语音请求基础协议类
  */
@@ -282,6 +283,14 @@ public class SpeechReqProtocol {
             result.put("context", context);
         }
         return JSON.toJSONString(result);
+    }
+
+    public Connection getConnection(){
+        return conn;
+    }
+
+    public State getState(){
+        return state;
     }
 
 }

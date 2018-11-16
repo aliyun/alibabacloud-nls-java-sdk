@@ -19,7 +19,8 @@ package com.alibaba.nls.client.protocol;
 import java.util.ResourceBundle;
 
 /**
- * Created by zhishen on 2018/6/1.
+ * @author zhishen.ml
+ * @date 2018/06/01
  */
 public class Constant {
     public static String sdkVersion = "";

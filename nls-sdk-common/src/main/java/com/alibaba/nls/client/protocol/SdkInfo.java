@@ -17,7 +17,9 @@
 package com.alibaba.nls.client.protocol;
 
 /**
- * Created by zhishen on 2018/6/7.
+ * @author zhishen.ml
+ * @date 2018/06/07
+ *
  */
 public class SdkInfo {
     public String name = "nls-sdk-java";

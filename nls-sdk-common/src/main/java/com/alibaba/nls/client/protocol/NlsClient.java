@@ -24,7 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by zhishen on 2017/11/2.
+ * @author zhishen.ml
+ * @date 2017/11/02
+ *
  * 语音处理client,全局维护一个实例即可
  */
 public class NlsClient {

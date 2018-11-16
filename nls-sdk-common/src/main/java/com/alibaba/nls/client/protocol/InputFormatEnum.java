@@ -46,6 +46,7 @@ public enum InputFormatEnum {
         return name;
     }
 
+
     InputFormatEnum(String name, int index) {
         this.name = name;
         this.index = index;

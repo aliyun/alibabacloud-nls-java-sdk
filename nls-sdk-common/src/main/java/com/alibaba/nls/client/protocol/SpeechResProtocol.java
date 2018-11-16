@@ -20,7 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by zhishen on 2017/11/27.
+ * @author zhishen.ml
+ * @date 2017/11/27
  *
  * 服务端应答基础协议类
  */
@@ -42,5 +43,9 @@ public class SpeechResProtocol {
 
     public String getStatusText() {
         return (String)header.get(Constant.PROP_STATUS_TEXT);
+    }
+
+    public String getTaskId(){
+        return (String)header.get(Constant.PROP_TASK_ID);
     }
 }
