@@ -27,7 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by zhishen on 2017/11/2.
+ * @author zhishen.ml
+ * @date 2017/11/28
+ *
  */
 public abstract class SpeechSynthesizerListener implements ConnectionListener {
     Logger logger = LoggerFactory.getLogger(SpeechSynthesizerListener.class);
@@ -76,11 +78,11 @@ public abstract class SpeechSynthesizerListener implements ConnectionListener {
         logger.debug("on message:{}", message);
         SpeechSynthesizerResponse response = JSON.parseObject(message, SpeechSynthesizerResponse.class);
         if (isComplete(response)) {
-            completeLatch.countDown();
             onComplete(response);
-        } else if (isTaskFailed(response)) {
             completeLatch.countDown();
+        } else if (isTaskFailed(response)) {
             onFail(response.getStatus(), response.getStatusText());
+            completeLatch.countDown();
         } else {
             logger.error(message);
         }

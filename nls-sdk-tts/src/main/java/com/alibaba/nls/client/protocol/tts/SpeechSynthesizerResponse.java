@@ -19,7 +19,8 @@ package com.alibaba.nls.client.protocol.tts;
 import com.alibaba.nls.client.protocol.SpeechResProtocol;
 
 /**
- * Created by zhishen on 2017/11/3.
+ * @author zhishen.ml
+ * @date 2017/11/28
  */
 public class SpeechSynthesizerResponse extends SpeechResProtocol {
 }

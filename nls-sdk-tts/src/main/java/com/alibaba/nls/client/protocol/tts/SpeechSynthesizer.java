@@ -34,7 +34,9 @@ import org.slf4j.LoggerFactory;
 import static com.alibaba.nls.client.protocol.SpeechReqProtocol.State.STATE_CLOSED;
 
 /**
- * Created by zhishen on 2017/11/28.
+ * @author zhishen.ml
+ * @date 2017/11/28
+ *
  * 语音合成
  */
 public class SpeechSynthesizer extends SpeechReqProtocol {
@@ -100,6 +102,14 @@ public class SpeechSynthesizer extends SpeechReqProtocol {
      */
     public void setSampleRate(SampleRateEnum sampleRate) {
         payload.put(TTSConstant.PROP_TTS_SAMPLE_RATE, sampleRate.value);
+    }
+
+    /**
+     * 个别场景需要设置除'SampleRateEnum'之外的采样率,如32000,采用此方法进行设置
+     * @param sampleRate
+     */
+    public void setSampleRate(int sampleRate) {
+        payload.put(TTSConstant.PROP_TTS_SAMPLE_RATE, sampleRate);
     }
 
     /**

@@ -17,7 +17,8 @@
 package com.alibaba.nls.client.protocol.tts;
 
 /**
- * Created by zhishen on 2018/6/1.
+ * @author zhishen.ml
+ * @date 2017/11/28
  */
 public class TTSConstant {
     public static final String PROP_TTS_FORMAT = "format";
