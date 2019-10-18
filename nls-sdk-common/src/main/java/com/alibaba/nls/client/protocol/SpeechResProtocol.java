@@ -45,7 +45,34 @@ public class SpeechResProtocol {
         return (String)header.get(Constant.PROP_STATUS_TEXT);
     }
 
-    public String getTaskId(){
+    public String getTaskId() {
         return (String)header.get(Constant.PROP_TASK_ID);
+    }
+
+    /**
+     * 根据指定key从payload中获取字符串类型的数据
+     * @param key
+     * @return
+     */
+    public String getString(String key) {
+        return (String)payload.get(key);
+    }
+
+    /**
+     * 根据指定key从payload中获取整数类型的数据
+     * @param key
+     * @return
+     */
+    public Integer getInt(String key) {
+        return (Integer)payload.get(key);
+    }
+
+    /**
+     * 根据指定key从payload中获取Object类型的数据
+     * @param key
+     * @return
+     */
+    public Object getObject(String key) {
+        return (Object)payload.get(key);
     }
 }

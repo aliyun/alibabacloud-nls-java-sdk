@@ -34,4 +34,8 @@ public interface Connection {
 
     public boolean isActive();
 
+    public long getConnectingLatency();
+
+    public long getWsHandshakeLatency();
+
 }

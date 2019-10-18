@@ -123,7 +123,6 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
 
         if (msg instanceof FullHttpResponse) {
             FullHttpResponse response = (FullHttpResponse)msg;
-            listener.onFail(response.status().code(), response.content().toString(CharsetUtil.UTF_8));
             throw new IllegalStateException(
                 "Unexpected FullHttpResponse (getStatus=" + response.status() +
                     ", content=" + response.content().toString(CharsetUtil.UTF_8) + ')');
@@ -151,7 +150,6 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
         if (!handshakeFuture.isDone()) {
             handshakeFuture.setFailure(cause);
         }
-        listener.onError(cause);
         logger.error("error", cause);
         ctx.close();
     }

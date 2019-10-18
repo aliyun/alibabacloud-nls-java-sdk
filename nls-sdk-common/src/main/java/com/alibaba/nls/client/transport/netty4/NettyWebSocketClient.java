@@ -97,16 +97,19 @@ public final class NettyWebSocketClient {
         httpHeaders.set(Constant.HEADER_TOKEN, token);
         WebSocketClientHandshaker handshaker = WebSocketClientHandshakerFactory
             .newHandshaker(websocketURI, WebSocketVersion.V13, null, true, httpHeaders);
-
+        long start=System.currentTimeMillis();
         Channel channel = bootstrap.connect(websocketURI.getHost(), port).sync().channel();
-        logger.debug("websocket channel is established after sync,connectionId:{}", channel.id());
+        long connectingTime=System.currentTimeMillis()-start;
+        logger.debug("websocket channel is established after sync,connectionId:{} ,use {}", channel.id(),connectingTime);
         WebSocketClientHandler handler = (WebSocketClientHandler)channel.pipeline().get("hookedHandler");
         handler.setListener(listener);
         handler.setHandshaker(handshaker);
         handshaker.handshake(channel);
+        start=System.currentTimeMillis();
         handler.handshakeFuture().sync();
-        logger.debug("websocket connection is established after handshake,connectionId:{}", channel.id());
-        return new NettyConnection(channel);
+        long handshakeTime=System.currentTimeMillis()-start;
+        logger.debug("websocket connection is established after handshake,connectionId:{},use {}", channel.id(),handshakeTime);
+        return new NettyConnection(channel,connectingTime,handshakeTime);
     }
 
     public void shutdown() {

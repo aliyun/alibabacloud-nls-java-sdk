@@ -49,6 +49,10 @@ public abstract class SpeechSynthesizerListener implements ConnectionListener {
      */
     abstract public void onComplete(SpeechSynthesizerResponse response);
 
+    public void onMetaInfo(SpeechSynthesizerResponse response){
+        logger.info("MetaInfo event:{}",response.getTaskId());
+    }
+
     @Override
     public void onOpen() {
         logger.info("connection is ok");
@@ -64,11 +68,6 @@ public abstract class SpeechSynthesizerListener implements ConnectionListener {
 
     }
 
-    @Override
-    public void onError(Throwable throwable) {
-        logger.error("error occurred", throwable);
-
-    }
 
     @Override
     public void onMessage(String message) {
@@ -81,25 +80,21 @@ public abstract class SpeechSynthesizerListener implements ConnectionListener {
             onComplete(response);
             completeLatch.countDown();
         } else if (isTaskFailed(response)) {
-            onFail(response.getStatus(), response.getStatusText());
+            onFail(response);
             completeLatch.countDown();
+        } else if (isMetaInfo(response)){
+            onMetaInfo(response);
         } else {
-            logger.error(message);
+            logger.warn(message);
         }
 
     }
 
     /**
-     * 失败状况处理
-     *
-     * @param status
-     * @param reason
+     * 失败处理
+     * @param response
      */
-    @Override
-    public void onFail(int status, String reason) {
-        logger.error("fail status:{},reasone:{}", status, reason);
-
-    }
+    abstract public  void onFail(SpeechSynthesizerResponse response) ;
 
     @Override
     abstract public void onMessage(ByteBuffer message);
@@ -116,6 +111,14 @@ public abstract class SpeechSynthesizerListener implements ConnectionListener {
     private boolean isTaskFailed(SpeechSynthesizerResponse response) {
         String name = response.getName();
         if (name.equals(Constant.VALUE_NAME_TASK_FAILE)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isMetaInfo(SpeechSynthesizerResponse response) {
+        String name = response.getName();
+        if (name.equals("MetaInfo")) {
             return true;
         }
         return false;

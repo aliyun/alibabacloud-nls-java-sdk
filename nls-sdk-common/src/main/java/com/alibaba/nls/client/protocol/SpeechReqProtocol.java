@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.alibaba.nls.client.protocol.SpeechReqProtocol.State.STATE_INIT;
+import static com.alibaba.nls.client.protocol.SpeechReqProtocol.State.STATE_REQUEST_SENT;
 
 /**
  * @author zhishen.ml
@@ -133,7 +134,7 @@ public class SpeechReqProtocol {
 
             @Override
             public void checkStart() {
-                throw new RuntimeException("can't start,current state is " + this);
+                return;
             }
 
             @Override
@@ -167,7 +168,8 @@ public class SpeechReqProtocol {
         STATE_COMPLETE(50) {
             @Override
             public void checkSend() {
-                throw new RuntimeException("can't send,current state is " + this);
+                //开启静音监测时,服务端可能提前结束
+                logger.warn("task is completed before sending binary");
             }
 
             @Override
@@ -291,6 +293,19 @@ public class SpeechReqProtocol {
 
     public State getState(){
         return state;
+    }
+
+    public void start() throws Exception{
+        state.checkStart();
+        Map<String,Long> network=new HashMap<String, Long>();
+        network.put("connect_cost",conn.getConnectingLatency());
+        network.put("upgrade_cost",conn.getWsHandshakeLatency());
+        putContext("network",network);
+        String taskId = IdGen.genId();
+        currentTaskId = taskId;
+        setTaskId(currentTaskId);
+        conn.sendText(this.serialize());
+        state = STATE_REQUEST_SENT;
     }
 
 }

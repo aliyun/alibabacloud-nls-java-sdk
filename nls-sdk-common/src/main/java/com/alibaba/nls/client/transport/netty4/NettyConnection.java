@@ -34,9 +34,17 @@ import org.slf4j.LoggerFactory;
 public class NettyConnection implements Connection {
     static Logger logger = LoggerFactory.getLogger(NettyConnection.class);
     Channel channel;
+    long connectingLatency;
+    long handshakeLatency;
 
     public NettyConnection(Channel channel) {
         this.channel = channel;
+    }
+
+    public NettyConnection(Channel channel,long connectingLatency,long handshakeLatency) {
+        this.channel = channel;
+        this.connectingLatency=connectingLatency;
+        this.handshakeLatency=handshakeLatency;
     }
 
     @Override
@@ -54,6 +62,16 @@ public class NettyConnection implements Connection {
             return true;
         }
         return  false;
+    }
+
+    @Override
+    public long getConnectingLatency() {
+        return connectingLatency;
+    }
+
+    @Override
+    public long getWsHandshakeLatency() {
+        return handshakeLatency;
     }
 
     @Override

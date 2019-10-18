@@ -25,13 +25,12 @@ import com.alibaba.nls.client.protocol.NlsClient;
 import com.alibaba.nls.client.protocol.OutputFormatEnum;
 import com.alibaba.nls.client.protocol.SampleRateEnum;
 import com.alibaba.nls.client.protocol.SpeechReqProtocol;
-import com.alibaba.nls.client.transport.Connection;
-import com.alibaba.nls.client.util.IdGen;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.alibaba.nls.client.protocol.SpeechReqProtocol.State.STATE_CLOSED;
+import static com.alibaba.nls.client.protocol.SpeechReqProtocol.State.STATE_REQUEST_CONFIRMED;
 
 /**
  * @author zhishen.ml
@@ -41,9 +40,10 @@ import static com.alibaba.nls.client.protocol.SpeechReqProtocol.State.STATE_CLOS
  */
 public class SpeechSynthesizer extends SpeechReqProtocol {
     static Logger logger = LoggerFactory.getLogger(SpeechSynthesizer.class);
-    private Connection conn;
     private SpeechSynthesizerListener listener;
     private CountDownLatch completeLatch;
+    private boolean isLongText;
+
     /**
      * 如果没有设置format,默认为pcm
      */
@@ -56,8 +56,19 @@ public class SpeechSynthesizer extends SpeechReqProtocol {
     private static final Integer DEFAULT_VOICE_VOLUME = 50;
 
     public SpeechSynthesizer(NlsClient client, SpeechSynthesizerListener listener) throws Exception{
-        this.conn = client.connect(listener);
+        conn = client.connect(listener);
         this.listener = listener;
+        afterConnection(listener);
+
+    }
+
+    public SpeechSynthesizer(NlsClient client,String token, SpeechSynthesizerListener listener) throws Exception{
+        this.conn = client.connect(token,listener);
+        this.listener = listener;
+        afterConnection(listener);
+    }
+
+    protected void afterConnection(SpeechSynthesizerListener listener){
         payload = new HashMap<String, Object>();
         header.put(Constant.PROP_NAMESPACE, TTSConstant.VALUE_NAMESPACE_TTS);
         header.put(Constant.PROP_NAME, TTSConstant.VALUE_NAME_TTS_START);
@@ -66,6 +77,7 @@ public class SpeechSynthesizer extends SpeechReqProtocol {
         payload.put(TTSConstant.PROP_TTS_VOLUME, DEFAULT_VOICE_VOLUME);
         listener.setSpeechSynthesizer(this);
         state = State.STATE_CONNECTED;
+
     }
 
     /**
@@ -83,6 +95,14 @@ public class SpeechSynthesizer extends SpeechReqProtocol {
      * @param text
      */
     public void setText(String text) {
+        isLongText = false;
+        header.put(Constant.PROP_NAMESPACE, TTSConstant.VALUE_NAMESPACE_TTS);
+        payload.put(TTSConstant.PROP_TTS_TEXT, text);
+    }
+
+    public void setLongText(String text) {
+        isLongText = true;
+        header.put(Constant.PROP_NAMESPACE, TTSConstant.VALUE_NAMESPACE_LONG_TTS);
         payload.put(TTSConstant.PROP_TTS_TEXT, text);
     }
 
@@ -158,12 +178,10 @@ public class SpeechSynthesizer extends SpeechReqProtocol {
      *
      * @throws Exception
      */
+    @Override
     public void start() throws Exception {
-        state.checkStart();
-        String taskId = IdGen.genId();
-        currentTaskId = taskId;
-        setTaskId(taskId);
-        conn.sendText(this.serialize());
+        super.start();
+        state = STATE_REQUEST_CONFIRMED;
         completeLatch = new CountDownLatch(1);
         listener.setCompleteLatch(completeLatch);
     }

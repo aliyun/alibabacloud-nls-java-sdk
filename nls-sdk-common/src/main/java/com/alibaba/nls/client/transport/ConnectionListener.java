@@ -43,21 +43,6 @@ public interface ConnectionListener {
     void onClose(int closeCode, String reason);
 
     /**
-     * Invoked after an error.
-     *
-     * @param throwable the cause
-     */
-    void onError(Throwable throwable);
-
-    /**
-     * Invoded after fail
-     *
-     * @param status
-     * @param reason
-     */
-    void onFail(int status, String reason);
-
-    /**
      * Invoked on arrival of a text message.
      *
      * @param message the text message.

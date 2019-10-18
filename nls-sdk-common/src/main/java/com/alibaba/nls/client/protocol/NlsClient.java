@@ -39,6 +39,8 @@ public class NlsClient {
      */
     public int DEFAULT_CONNECTION_TIMEOUT = 5000;
 
+    public NlsClient(){}
+
     /**
      * 传入accessToken,访问阿里云线上服务
      *
@@ -83,6 +85,22 @@ public class NlsClient {
         for (int i = 0; i < 3; i++) {
             try {
                 return client.connect(token, listener, DEFAULT_CONNECTION_TIMEOUT);
+            } catch (Exception e) {
+                if (i == 2) {
+                    logger.error("failed to connect to server after 3 tries,error msg is :{}", e.getMessage());
+                    throw e;
+                }
+                Thread.sleep(100);
+                logger.warn("failed to connect to server the {} time:{} ,try again ", i, e.getMessage());
+            }
+        }
+        return null;
+    }
+
+    public Connection connect(String accessToken,ConnectionListener listener) throws Exception {
+        for (int i = 0; i < 3; i++) {
+            try {
+                return client.connect(accessToken, listener, DEFAULT_CONNECTION_TIMEOUT);
             } catch (Exception e) {
                 if (i == 2) {
                     logger.error("failed to connect to server after 3 tries,error msg is :{}", e.getMessage());

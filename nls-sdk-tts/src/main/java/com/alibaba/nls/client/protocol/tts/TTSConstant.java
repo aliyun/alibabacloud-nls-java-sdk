@@ -30,6 +30,7 @@ public class TTSConstant {
     public static final String PROP_TTS_VOLUME = "volume";
     public static final String PROP_TTS_METHOD = "method";
     public static final String VALUE_NAMESPACE_TTS = "SpeechSynthesizer";
+    public static final String VALUE_NAMESPACE_LONG_TTS = "SpeechLongSynthesizer";
     public static final String VALUE_NAME_TTS_START = "StartSynthesis";
     public static final String VALUE_NAME_TTS_STARTED = "SynthesisStarted";
     public static final String VALUE_NAME_TTS_COMPLETE = "SynthesisCompleted";

@@ -62,6 +62,7 @@ public class Constant {
     public static final String VALUE_NAME_ASR_TRANSCRIPTION_STARTED = "TranscriptionStarted";
     public static final String VALUE_NAME_ASR_TRANSCRIPTION_RESULT_CHANGE = "TranscriptionResultChanged";
     public static final String VALUE_NAME_ASR_TRANSCRIPTION_COMPLETE = "TranscriptionCompleted";
+    public static final String VALUE_NAME_ASR_NLP_RESULT = "SentenceSemantics";
     public static final String VALUE_NAME_ASR_SENTENCE_BEGIN = "SentenceBegin";
     public static final String VALUE_NAME_ASR_SENTENCE_END = "SentenceEnd";
 }
