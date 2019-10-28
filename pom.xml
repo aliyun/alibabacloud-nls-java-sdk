@@ -44,9 +44,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/alibaba/nls-sdk-java.git</connection>
-        <developerConnection>scm:git:https://github.com/alibaba/nls-sdk-java.git</developerConnection>
-        <url>https://github.com/alibaba/nls-sdk-java.git</url>
+        <connection>scm:git:https://github.com/aliyun/alibabacloud-nls-java-sdk.git</connection>
+        <developerConnection>scm:git:https://github.com/aliyun/alibabacloud-nls-java-sdk.git</developerConnection>
+        <url>https://github.com/aliyun/alibabacloud-nls-java-sdk.git</url>
     </scm>
 
     <dependencyManagement>
